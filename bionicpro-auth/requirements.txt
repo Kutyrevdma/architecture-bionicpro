@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+python-keycloak
+requests
+python-multipart
+jinja2
