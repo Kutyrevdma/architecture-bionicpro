@@ -23,7 +23,6 @@ const ReportPage: React.FC = () => {
       setError(null);
       setReportData(null);
 
-      // 1. Call BFF
       const response = await fetch(`http://localhost:8000/reports`, {
         credentials: 'include'
       });
@@ -33,23 +32,11 @@ const ReportPage: React.FC = () => {
             window.location.reload();
             return;
         }
-        throw new Error('Failed to fetch report metadata');
+        throw new Error('Failed to fetch report');
       }
 
       const data = await response.json();
-
-      // 2. Check for CDN URL
-      if (data.report_url) {
-          console.log("Fetching from CDN: " + data.report_url);
-          const cdnResponse = await fetch(data.report_url);
-          if (!cdnResponse.ok) {
-              throw new Error('Failed to fetch report from CDN');
-          }
-          const cdnData = await cdnResponse.json();
-          setReportData(cdnData);
-      }
-      // Fallback for legacy format
-      else if (data.reports) {
+      if (data.reports) {
           setReportData(data);
       } else {
           alert(JSON.stringify(data));
@@ -66,7 +53,7 @@ const ReportPage: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <div className="p-8 bg-white rounded-lg shadow-md w-full max-w-4xl">
         <h1 className="text-2xl font-bold mb-6">Usage Reports</h1>
-        
+
         <button
           onClick={downloadReport}
           disabled={loading}
